@@ -1,5 +1,5 @@
 // Copyright 2026 DolphiniOS Project
-// SPDX-License-Identifier: GPL-2.0-or-later
+// Licensed under the Provenance License (see LICENSE.md).
 import Foundation
 #if canImport(MetricKit) && !os(tvOS)
 import MetricKit

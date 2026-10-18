@@ -1,5 +1,5 @@
 // Copyright 2026 DolphiniOS Project
-// SPDX-License-Identifier: GPL-2.0-or-later
+// Licensed under the Provenance License (see LICENSE.md).
 import Foundation
 import os
 #if canImport(MetricKit) && !os(tvOS)
@@ -70,7 +70,6 @@ public struct ExtensionTelemetry {
         public var nameString: String { "\(name)" }
     }
 
-    static let subsystem = "com.joemattiello.iCube"
     /// `MXSignpostMetric.signpostCategory` of everything recorded here; the app's
     /// `ExtensionMetricsReport` filters on it.
     public static let signpostCategory = "Extensions"
@@ -79,13 +78,15 @@ public struct ExtensionTelemetry {
     private let logger: Logger
     private let signpostLog: OSLog
 
-    public init(_ surface: Surface) {
+    /// - Parameter subsystem: the app's os_log subsystem
+    ///   (`LibrarySnapshotConfiguration.telemetrySubsystem`).
+    public init(_ surface: Surface, subsystem: String) {
         self.surface = surface
-        logger = Logger(subsystem: Self.subsystem, category: surface.rawValue)
+        logger = Logger(subsystem: subsystem, category: surface.rawValue)
         #if canImport(MetricKit) && !os(tvOS)
         signpostLog = MXMetricManager.makeLogHandle(category: Self.signpostCategory)
         #else
-        signpostLog = OSLog(subsystem: Self.subsystem, category: Self.signpostCategory)
+        signpostLog = OSLog(subsystem: subsystem, category: Self.signpostCategory)
         #endif
     }
 

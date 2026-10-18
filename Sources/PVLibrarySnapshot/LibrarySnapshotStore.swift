@@ -5,7 +5,14 @@ import Foundation
 public struct LibrarySnapshotStore {
     private let defaults: UserDefaults?
 
-    public init(defaults: UserDefaults? = LibrarySnapshotAppGroup.defaults) {
+    /// Reads and writes the snapshot in the app group's shared defaults.
+    public init(appGroup: LibrarySnapshotAppGroup) {
+        self.defaults = appGroup.defaults
+    }
+
+    /// A store on any defaults (tests, previews); nil behaves like an
+    /// unavailable app group.
+    public init(defaults: UserDefaults?) {
         self.defaults = defaults
     }
 

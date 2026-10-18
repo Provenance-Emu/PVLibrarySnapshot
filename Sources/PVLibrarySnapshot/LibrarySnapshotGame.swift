@@ -5,7 +5,10 @@ public struct LibrarySnapshotGame: Codable, Sendable, Identifiable, Hashable {
     public let id: String
     public let title: String
     public let filePath: String
-    public let platform: LibraryPlatform
+    /// The app's platform/system identifier (iCube: "gamecube", "wii", …). A
+    /// string so each app keeps its own platform type; iCube's enum encoded as
+    /// its raw value, so existing snapshots decode unchanged.
+    public let platform: String
     public let gametdbID: String?
     public let region: String?
     public let lastPlayed: Date?
@@ -16,10 +19,10 @@ public struct LibrarySnapshotGame: Codable, Sendable, Identifiable, Hashable {
     /// decodes a missing key to `nil` (Optional stored properties use `decodeIfPresent`), so
     /// older on-disk snapshots keep decoding.
     public let dateAdded: Date?
-    /// Basename inside `LibrarySnapshotAppGroup.mediaDirectory`, nil when the app has no cover.
+    /// Basename inside the app group's `mediaDirectory`, nil when the app has no cover.
     public let coverFilename: String?
 
-    public init(id: String, title: String, filePath: String, platform: LibraryPlatform,
+    public init(id: String, title: String, filePath: String, platform: String,
                 gametdbID: String?, region: String?, lastPlayed: Date?, isFavorite: Bool,
                 dateAdded: Date? = nil, coverFilename: String?) {
         self.id = id
@@ -36,17 +39,18 @@ public struct LibrarySnapshotGame: Codable, Sendable, Identifiable, Hashable {
 
     public var filename: String { (filePath as NSString).lastPathComponent }
 
-    /// `dolphinios://play?id=<id>`, handled by `URLRouterService` in the app.
-    public var launchURL: URL? {
+    /// `<scheme>://<host>?<queryItem>=<id>` from the app's configuration
+    /// (iCube: `dolphinios://play?id=<id>`).
+    public func launchURL(using configuration: LibrarySnapshotConfiguration) -> URL? {
         var components = URLComponents()
-        components.scheme = "dolphinios"
-        components.host = "play"
-        components.queryItems = [URLQueryItem(name: "id", value: id)]
+        components.scheme = configuration.launchURLScheme
+        components.host = configuration.launchURLHost
+        components.queryItems = [URLQueryItem(name: configuration.launchURLQueryItem, value: id)]
         return components.url
     }
 
-    public var coverURL: URL? {
+    public func coverURL(in appGroup: LibrarySnapshotAppGroup) -> URL? {
         guard let coverFilename else { return nil }
-        return LibrarySnapshotAppGroup.mediaDirectory?.appendingPathComponent(coverFilename, isDirectory: false)
+        return appGroup.mediaDirectory?.appendingPathComponent(coverFilename, isDirectory: false)
     }
 }

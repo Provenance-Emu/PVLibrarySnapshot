@@ -2,6 +2,10 @@ import XCTest
 @testable import PVLibrarySnapshot
 
 final class LibrarySnapshotTests: XCTestCase {
+    static let config = LibrarySnapshotConfiguration(
+        appGroupIdentifier: "group.test.snapshot", launchURLScheme: "testapp", telemetrySubsystem: "test.snapshot"
+    )
+
     private var suiteName: String!
     private var defaults: UserDefaults!
 
@@ -19,19 +23,19 @@ final class LibrarySnapshotTests: XCTestCase {
     private func game(_ id: String, title: String, lastPlayed: Date? = nil, favorite: Bool = false,
                       dateAdded: Date? = nil) -> LibrarySnapshotGame {
         LibrarySnapshotGame(id: id, title: title, filePath: "/Software/\(title).rvz",
-                            platform: .gamecube, gametdbID: id, region: "USA",
+                            platform: "gamecube", gametdbID: id, region: "USA",
                             lastPlayed: lastPlayed, isFavorite: favorite, dateAdded: dateAdded,
                             coverFilename: "cover_\(id).jpg")
     }
 
-    func testAppGroupIdentifierIsFixed() {
-        XCTAssertEqual(LibrarySnapshotAppGroup.identifier, "group.com.joemattiello.icube")
+    func testAppGroupIdentifierComesFromConfiguration() {
+        XCTAssertEqual(LibrarySnapshotAppGroup(configuration: Self.config).identifier, "group.test.snapshot")
         XCTAssertEqual(LibrarySnapshotAppGroup.coverFilename(gameID: "GALE01"), "cover_GALE01.jpg")
     }
 
     func testLaunchURL() {
         let g = game("GALE01", title: "Melee")
-        XCTAssertEqual(g.launchURL?.absoluteString, "dolphinios://play?id=GALE01")
+        XCTAssertEqual(g.launchURL(using: Self.config)?.absoluteString, "testapp://play?id=GALE01")
     }
 
     func testBuildSortsRecentsAndFavorites() {

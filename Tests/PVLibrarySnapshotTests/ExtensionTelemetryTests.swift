@@ -19,17 +19,17 @@ final class ExtensionTelemetryTests: XCTestCase {
     }
 
     func testMeasureReturnsTheBodyValue() {
-        XCTAssertEqual(ExtensionTelemetry(.thumbnail).measure(.thumbnailLookup) { 42 }, 42)
+        XCTAssertEqual(ExtensionTelemetry(.thumbnail, subsystem: "test.snapshot").measure(.thumbnailLookup) { 42 }, 42)
     }
 
     func testMeasureRethrows() {
-        XCTAssertThrowsError(try ExtensionTelemetry(.preview).measure(.previewBuild) { throw Boom() }) {
+        XCTAssertThrowsError(try ExtensionTelemetry(.preview, subsystem: "test.snapshot").measure(.previewBuild) { throw Boom() }) {
             XCTAssertTrue($0 is Boom)
         }
     }
 
     func testRecordingDoesNotTrap() {
-        let telemetry = ExtensionTelemetry(.widget)
+        let telemetry = ExtensionTelemetry(.widget, subsystem: "test.snapshot")
         for outcome: LibrarySnapshotLoadOutcome in [.loaded, .neverWritten, .appGroupUnavailable, .decodeFailed, .newerSchema(3)] {
             telemetry.record(outcome)
         }
