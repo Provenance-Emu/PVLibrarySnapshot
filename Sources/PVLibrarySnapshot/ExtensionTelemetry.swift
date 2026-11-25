@@ -23,12 +23,12 @@ import MetricKit
 /// MetricKit keeps a capped number of custom signposts, so names are a small fixed set: one
 /// interval per extension plus one event per failure reason, shared by every extension.
 public struct ExtensionTelemetry {
-    public enum Surface: String {
+    @frozen public enum Surface: String {
         case thumbnail, preview, topShelf = "topshelf", widget
     }
 
     /// The one timed operation per extension.
-    public enum Interval: CaseIterable {
+    @frozen public enum Interval: CaseIterable {
         case thumbnailLookup, previewBuild, topShelfBuild, widgetEntry
 
         var name: StaticString {
@@ -45,7 +45,7 @@ public struct ExtensionTelemetry {
     }
 
     /// Point events, counted per day by MetricKit. Shared by every extension.
-    public enum FailureEvent: CaseIterable {
+    @frozen public enum FailureEvent: CaseIterable {
         case snapshotNoAppGroup, snapshotDecodeFailed, snapshotNewerSchema, coverUnreadable
 
         /// nil for outcomes that aren't failures.

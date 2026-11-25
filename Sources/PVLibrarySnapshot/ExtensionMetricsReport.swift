@@ -62,7 +62,7 @@ public struct ExtensionMetricsReport: Equatable, Sendable {
         public let maxMs: Double?
     }
 
-    public enum Decision: Equatable, Sendable {
+    @frozen public enum Decision: Equatable, Sendable {
         /// At least one failure event: always send.
         case failures
         /// Timing only, and this payload won the sample roll.
