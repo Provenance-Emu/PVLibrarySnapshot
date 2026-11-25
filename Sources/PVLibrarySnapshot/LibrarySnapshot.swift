@@ -1,6 +1,6 @@
 import Foundation
 
-public enum LibrarySnapshotKeys {
+@frozen public enum LibrarySnapshotKeys {
     public static let snapshot = "snapshot.v1"
 }
 

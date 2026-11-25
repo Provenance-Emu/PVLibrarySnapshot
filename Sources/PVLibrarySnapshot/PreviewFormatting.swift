@@ -1,6 +1,6 @@
 import Foundation
 
-public enum PreviewFormatting {
+@frozen public enum PreviewFormatting {
     public static func escape(_ s: String) -> String {
         s.replacingOccurrences(of: "&", with: "&amp;")
          .replacingOccurrences(of: "<", with: "&lt;")

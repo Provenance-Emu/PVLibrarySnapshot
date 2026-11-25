@@ -51,7 +51,7 @@ public struct LibrarySnapshotStore {
 }
 
 /// Why `LibrarySnapshotStore.load()` returned what it did.
-public enum LibrarySnapshotLoadOutcome: Equatable, Sendable {
+@frozen public enum LibrarySnapshotLoadOutcome: Equatable, Sendable {
     case loaded
     /// No snapshot key yet: the app has not written one on this install. Expected, not a failure.
     case neverWritten
